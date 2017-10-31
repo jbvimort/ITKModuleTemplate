@@ -1,13 +1,32 @@
+environment:
+  global:
+    # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
+    # /E:ON and /V:ON options are not enabled in the batch script intepreter
+    # See: http://stackoverflow.com/a/13751649/163740
+    CMD_IN_ENV: "cmd /E:ON /V:ON /C .\\appveyor\\run_with_env.cmd"
+
+  matrix:
+
+    - PYTHON: "C:\\Python27-x64"
+      PYTHON_VERSION: "2.7.12" 
+      PYTHON_ARCH: "64"
+
+
 branches:
  only:
   - master
 
 version: "0.0.1.{build}"
 
+init:
+  - python -m pip install -U scikit-ci-addons
+  - python -m ci_addons --install ../addons
+
 install:
 
   - python -m pip install cookiecutter
   - cookiecutter --no-input .
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/fix-reinstall-python-27-33-34/windows/install-python.ps1'))
   - cd ITKModuleTemplate
   - curl -L https://rawgit.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/windows-download-cache-and-build-module-wheels.ps1 -O
   - ps: .\windows-download-cache-and-build-module-wheels.ps1
@@ -16,9 +35,12 @@ build: off
 
 test: off
 
+on_finish:
+  - ps: ../../addons/appveyor/enable-worker-remote-access.ps1 -block
+
 artifacts:
 
   # pushing entire folder as a zip archive
-  - path: dist\*
+  - path: ITKModuleTemplate/dist/*
 
 deploy: off
