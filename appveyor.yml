@@ -8,8 +8,9 @@ install:
 
   - python -m pip install cookiecutter
   - cookiecutter --no-input .
+# - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
   - cd ITKModuleTemplate
-  - curl -L https://rawgit.com/InsightSoftwareConsortium/ITKPythonPackage/master/scripts/windows-download-cache-and-build-module-wheels.ps1 -O
+  - curl -L https://rawgit.com/jbvimort/ITKPythonPackage/FixAppVeyor/scripts/windows-download-cache-and-build-module-wheels.ps1 -O
   - ps: .\windows-download-cache-and-build-module-wheels.ps1
 
 build: off
@@ -19,6 +20,6 @@ test: off
 artifacts:
 
   # pushing entire folder as a zip archive
-  - path: dist\*
+  - path: ITKModuleTemplate/dist/*
 
 deploy: off
