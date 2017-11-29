@@ -37,6 +37,7 @@ test: off
 
 on_finish:
   - ps: ../../addons/appveyor/enable-worker-remote-access.ps1 -block
+  #Use REMINA
 
 artifacts:
 
